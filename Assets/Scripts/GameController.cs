@@ -31,10 +31,28 @@ public class GameController : MonoBehaviour
     //public float enemyAttackChance = 0.6f; // 60% chance after player attack
     private bool canAct = true;
 
+    public Slider playerHpBar;
+    public Slider enemyHpBar;
+    public Image enemyHpFill;
+    public Image playerHPFill;
+
+    public PlayerAnimatorController playerAnim;
+
+    public AudioSource sfxSource;
+    public AudioClip attackSfx;
+
     void Start()
     {
         playerDamageRange.x = Mathf.Max(1, playerDamageRange.x); // never 0-damage player hits
+
         playerHP = playerMaxHP;
+        if (playerHpBar) { 
+            playerHpBar.minValue = 0; 
+            playerHpBar.maxValue = playerMaxHP; 
+            playerHpBar.value = playerHP; 
+        }
+        if (playerHPFill) 
+            playerHPFill.color = EvaluateHealthColor(1f);
         SpawnNextEnemy();
         UpdateUI();
         attackButton.onClick.AddListener(OnAttackClicked);
@@ -61,6 +79,18 @@ public class GameController : MonoBehaviour
 
         currentEnemy = Instantiate(prefab, enemySpawnPoint.position, Quaternion.identity);
 
+        if (enemyHpBar)
+        {
+            enemyHpBar.minValue = 0;
+            enemyHpBar.maxValue = currentEnemy.data.maxHP;
+            enemyHpBar.value = currentEnemy.CurrentHP;
+        }
+        if (enemyHpFill)
+        {
+            float pct = (float)currentEnemy.CurrentHP / currentEnemy.data.maxHP;
+            enemyHpFill.color = EvaluateHealthColor(pct);
+        }
+
         Log(isBoss
             ? $"⚠ BOSS: {currentEnemy.data.displayName} challenges you!"
             : $"A wild {currentEnemy.data.displayName} appears!");
@@ -81,7 +111,12 @@ public class GameController : MonoBehaviour
         attackButton.interactable = false;
 
         int dmg = Random.Range(playerDamageRange.x, playerDamageRange.y + 1);
+        if (playerAnim) 
+            playerAnim.PlayAttack();
+        if (sfxSource && attackSfx)
+            sfxSource.PlayOneShot(attackSfx);
         currentEnemy.TakeHit(dmg);
+        StartCoroutine(AnimateHp(enemyHpBar, enemyHpFill, currentEnemy.CurrentHP, currentEnemy.data.maxHP));
         Log($"You hit {currentEnemy.data.displayName} for {dmg}.");
         UpdateUI();
 
@@ -107,6 +142,7 @@ public class GameController : MonoBehaviour
             {
                 int eDmg = currentEnemy.RollDamage();
                 playerHP = Mathf.Max(0, playerHP - eDmg);
+                StartCoroutine(AnimateHp(playerHpBar, playerHPFill, playerHP, playerMaxHP));   // NEW
                 Log($"{currentEnemy.data.displayName} hits you for {eDmg}.");
                 UpdateUI();
                 if (playerHP <= 0)
@@ -130,7 +166,43 @@ public class GameController : MonoBehaviour
     void UpdateUI()
     {
         playerHpText.text = $"HP: {playerHP}/{playerMaxHP}";
-        enemyHpText.text = $"{currentEnemy.data.displayName} HP: {currentEnemy.CurrentHP}/{currentEnemy.data.maxHP}";
+        //if (playerHpBar) playerHpBar.value = playerHP;
+
+        if (currentEnemy != null)
+            enemyHpText.text = $"{currentEnemy.data.displayName} HP: {currentEnemy.CurrentHP}/{currentEnemy.data.maxHP}";
+        else
+            enemyHpText.text = "";
+    }
+
+    Color EvaluateHealthColor(float pct)
+    {
+        pct = Mathf.Clamp01(pct);
+        if (pct <= 0.5f)
+            return Color.Lerp(Color.red, Color.yellow, pct / 0.5f);          // 0..50%: red → yellow
+        else
+            return Color.Lerp(Color.yellow, Color.green, (pct - 0.5f) / 0.5f); // 50..100%: yellow → green
+    }
+
+    System.Collections.IEnumerator AnimateHp(Slider bar, Image fill, int newHp, int maxHp, float dur = 0.2f)
+    {
+        if (!bar) yield break;
+
+        float start = bar.value;
+        float target = newHp;
+        float t = 0f;
+
+        while (t < dur)
+        {
+            t += Time.deltaTime;
+            float v = Mathf.Lerp(start, target, t / dur);
+            bar.value = v;
+
+            if (fill) fill.color = EvaluateHealthColor(v / maxHp);
+            yield return null;
+        }
+
+        bar.value = target;
+        if (fill) fill.color = EvaluateHealthColor((float)newHp / maxHp);
     }
 
     void Log(string s) { logText.text = s; }
