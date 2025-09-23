@@ -92,7 +92,7 @@ public class GameController : MonoBehaviour
         }
 
         Log(isBoss
-            ? $"⚠ BOSS: {currentEnemy.data.displayName} challenges you!"
+            ? $"BOSS: {currentEnemy.data.displayName} challenges you!"
             : $"A wild {currentEnemy.data.displayName} appears!");
 
         UpdateUI();

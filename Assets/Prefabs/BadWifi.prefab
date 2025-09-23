@@ -48,9 +48,9 @@ MonoBehaviour:
   data:
     displayName: Bad Wifi
     maxHP: 20
-    damageMin: 10
-    damageMax: 20
-    attackChance: 0.3
+    damageMin: 2
+    damageMax: 5
+    attackChance: 0.5
 --- !u!212 &-3325258284881455403
 SpriteRenderer:
   m_ObjectHideFlags: 0

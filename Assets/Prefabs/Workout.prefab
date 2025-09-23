@@ -48,8 +48,8 @@ MonoBehaviour:
   data:
     displayName: Workout
     maxHP: 15
-    damageMin: 10
-    damageMax: 20
+    damageMin: 5
+    damageMax: 10
     attackChance: 0.35
 --- !u!212 &-2829263913809128689
 SpriteRenderer:
