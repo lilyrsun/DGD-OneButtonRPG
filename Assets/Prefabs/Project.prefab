@@ -48,8 +48,8 @@ MonoBehaviour:
   data:
     displayName: Project
     maxHP: 10
-    damageMin: 7
-    damageMax: 10
+    damageMin: 5
+    damageMax: 8
     attackChance: 0.2
 --- !u!212 &1377774512814421561
 SpriteRenderer:

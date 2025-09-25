@@ -50,7 +50,7 @@ MonoBehaviour:
     maxHP: 30
     damageMin: 1
     damageMax: 5
-    attackChance: 0.45
+    attackChance: 0.35
 --- !u!212 &-7117200737141591798
 SpriteRenderer:
   m_ObjectHideFlags: 0

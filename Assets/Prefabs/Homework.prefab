@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   data:
     displayName: Homework
-    maxHP: 50
+    maxHP: 40
     damageMin: 1
     damageMax: 5
     attackChance: 0.2

@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     [Header("Player")]
     public int playerMaxHP = 50;
     public int playerHP;
-    public Vector2Int playerDamageRange = new Vector2Int(3, 10);
+    public Vector2Int playerDamageRange = new Vector2Int(3, 15);
 
     [Header("UI")]
     public TMP_Text playerHpText;

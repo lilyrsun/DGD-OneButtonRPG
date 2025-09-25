@@ -47,10 +47,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   data:
     displayName: F
-    maxHP: 90
-    damageMin: 3
-    damageMax: 10
-    attackChance: 0.6
+    maxHP: 75
+    damageMin: 2
+    damageMax: 7
+    attackChance: 0.5
 --- !u!212 &-3245603494477545673
 SpriteRenderer:
   m_ObjectHideFlags: 0
